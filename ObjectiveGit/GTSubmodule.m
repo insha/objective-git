@@ -25,7 +25,7 @@
 	return (GTSubmoduleIgnoreRule)git_submodule_ignore(self.git_submodule);
 }
 
-- (GTSubmodule *)submoduleByUpdatingIgnoreRule:(GTSubmoduleIgnoreRule)ignoreRule error:(NSError **)error {
+- (GTSubmodule *)submoduleByUpdatingIgnoreRule:(GTSubmoduleIgnoreRule)ignoreRule error:(NSError *__autoreleasing*)error {
 	int result = git_submodule_set_ignore(self.parentRepository.git_repository, git_submodule_name(self.git_submodule), (git_submodule_ignore_t)ignoreRule);
 	if (result != GIT_OK) {
 		if (error != NULL) {
@@ -107,7 +107,7 @@
 
 #pragma mark Inspection
 
-- (GTSubmoduleStatus)statusWithIgnoreRule:(GTSubmoduleIgnoreRule)ignoreRule error:(NSError **)error {
+- (GTSubmoduleStatus)statusWithIgnoreRule:(GTSubmoduleIgnoreRule)ignoreRule error:(NSError *__autoreleasing*)error {
 	unsigned status;
 	int gitError = git_submodule_status(&status, self.parentRepository.git_repository, git_submodule_name(self.git_submodule), (git_submodule_ignore_t)ignoreRule);
 	if (gitError != GIT_OK) {
@@ -118,13 +118,13 @@
 	return status;
 }
 
-- (GTSubmoduleStatus)status:(NSError **)error {
+- (GTSubmoduleStatus)status:(NSError *__autoreleasing*)error {
 	return [self statusWithIgnoreRule:self.ignoreRule error:error];
 }
 
 #pragma mark Manipulation
 
-- (BOOL)reload:(NSError **)error {
+- (BOOL)reload:(NSError *__autoreleasing*)error {
 	int gitError = git_submodule_reload(self.git_submodule, 0);
 	if (gitError != GIT_OK) {
 		if (error != NULL) *error = [NSError git_errorFor:gitError description:@"Failed to reload submodule %@.", self.name];
@@ -134,7 +134,7 @@
 	return YES;
 }
 
-- (BOOL)sync:(NSError **)error {
+- (BOOL)sync:(NSError *__autoreleasing*)error {
 	int gitError = git_submodule_sync(self.git_submodule);
 	if (gitError != GIT_OK) {
 		if (error != NULL) *error = [NSError git_errorFor:gitError description:@"Failed to synchronize submodule %@.", self.name];
@@ -144,7 +144,7 @@
 	return YES;
 }
 
-- (GTRepository *)submoduleRepository:(NSError **)error {
+- (GTRepository *)submoduleRepository:(NSError *__autoreleasing*)error {
 	git_repository *repo;
 	int gitError = git_submodule_open(&repo, self.git_submodule);
 	if (gitError != GIT_OK) {
@@ -155,7 +155,7 @@
 	return [[GTRepository alloc] initWithGitRepository:repo];
 }
 
-- (BOOL)writeToParentConfigurationDestructively:(BOOL)overwrite error:(NSError **)error {
+- (BOOL)writeToParentConfigurationDestructively:(BOOL)overwrite error:(NSError *__autoreleasing*)error {
 	int gitError = git_submodule_init(self.git_submodule, (overwrite ? 1 : 0));
 	if (gitError != GIT_OK) {
 		if (error != NULL) *error = [NSError git_errorFor:gitError description:@"Failed to initialize submodule %@.", self.name];
@@ -165,7 +165,7 @@
 	return YES;
 }
 
-- (BOOL)addToIndex:(NSError **)error {
+- (BOOL)addToIndex:(NSError *__autoreleasing*)error {
 	int gitError = git_submodule_add_to_index(self.git_submodule, 0);
 	if (gitError != GIT_OK) {
 		if (error != NULL) *error = [NSError git_errorFor:gitError description:@"Failed to add submodule %@ to its parent's index.", self.name];

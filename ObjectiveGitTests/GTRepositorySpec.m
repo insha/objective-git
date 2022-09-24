@@ -429,7 +429,7 @@ describe(@"move head", ^{
 		repository = self.testAppFixtureRepository;
 	});
 
-	//- (BOOL)moveHEADToReference:(GTReference *)reference error:(NSError **)error;
+	//- (BOOL)moveHEADToReference:(GTReference *)reference error:(NSError *__autoreleasing*)error;
 	it(@"should move to reference", ^{
 		NSError *error = nil;
 		GTReference *originalHead = [repository headReferenceWithError:NULL];
@@ -449,7 +449,7 @@ describe(@"move head", ^{
 		expect(head.targetOID.SHA).to(equal(targetReference.targetOID.SHA));
 	});
 
-	//- (BOOL)moveHEADToCommit:(GTCommit *)commit error:(NSError **)error;
+	//- (BOOL)moveHEADToCommit:(GTCommit *)commit error:(NSError *__autoreleasing*)error;
 	it(@"should move to commit", ^{
 		NSError *error = nil;
 		GTReference *originalHead = [repository headReferenceWithError:NULL];
