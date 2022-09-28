@@ -50,6 +50,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly) NSDate *commitDate;
 @property (nonatomic, readonly) NSTimeZone *commitTimeZone;
 @property (nonatomic, readonly) GTTree * _Nullable tree;
+@property (nonatomic, readonly) BOOL isSigned;
 
 /// Is this a merge commit?
 @property (nonatomic, readonly, assign, getter = isMerge) BOOL merge;

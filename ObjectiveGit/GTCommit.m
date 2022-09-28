@@ -165,4 +165,36 @@
 	return [[GTIndex alloc] initWithGitIndex:index repository:self.repository];
 }
 
+- (BOOL)isSigned
+{
+	BOOL returnValue = NO;
+
+	git_buf signature = GIT_BUF_INIT_CONST(0, NULL);
+	git_buf commitInformation = GIT_BUF_INIT_CONST(0, NULL);
+	const git_oid *commitID = git_commit_id(self.git_commit);
+
+	int result = git_commit_extract_signature(&signature,
+											  &commitInformation,
+											  self.repository.git_repository,
+											  commitID,
+											  NULL);
+
+	if (result == GIT_OK)
+	{
+		NSData *data = [NSData dataWithBytesNoCopy:signature.ptr
+											length:signature.size
+									  freeWhenDone:YES];
+
+		NSString *sign = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+
+		returnValue = sign != nil;
+	}
+	else
+	{
+		returnValue = NO;
+	}
+
+	return returnValue;
+}
+
 @end
