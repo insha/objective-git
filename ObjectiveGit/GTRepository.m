@@ -116,7 +116,7 @@ typedef struct {
 
 #pragma mark API
 
-+ (instancetype)initializeEmptyRepositoryAtFileURL:(NSURL *)localFileURL options:(NSDictionary *)optionsDict error:(NSError *__autoreleasing*)error {
++ (instancetype)initializeEmptyRepositoryAtFileURL:(NSURL *)localFileURL options:(NSDictionary *)optionsDict error:(NSError **)error {
 	if (!localFileURL.isFileURL || localFileURL.path == nil) {
 		if (error != NULL) *error = [NSError errorWithDomain:NSCocoaErrorDomain code:NSFileWriteUnsupportedSchemeError userInfo:@{ NSLocalizedDescriptionKey: NSLocalizedString(@"Invalid file path URL to initialize repository.", @"") }];
 		return nil;
@@ -146,7 +146,7 @@ typedef struct {
 	return [[self alloc] initWithGitRepository:repository];
 }
 
-+ (instancetype)repositoryWithURL:(NSURL *)localFileURL error:(NSError *__autoreleasing*)error {
++ (instancetype)repositoryWithURL:(NSURL *)localFileURL error:(NSError **)error {
 	return [[self alloc] initWithURL:localFileURL error:error];
 }
 
@@ -166,7 +166,7 @@ typedef struct {
 	return self;
 }
 
-- (instancetype)initWithURL:(NSURL *)localFileURL error:(NSError *__autoreleasing*)error {
+- (instancetype)initWithURL:(NSURL *)localFileURL error:(NSError **)error {
 	if (![localFileURL isFileURL] || localFileURL.path == nil) {
 		if (error != NULL) *error = [NSError errorWithDomain:NSCocoaErrorDomain code:NSFileReadUnsupportedSchemeError userInfo:@{ NSLocalizedDescriptionKey: NSLocalizedString(@"Invalid file path URL to open.", @"") }];
 		return nil;
@@ -182,7 +182,7 @@ typedef struct {
 	return [self initWithGitRepository:r];
 }
 
-- (instancetype)initWithURL:(NSURL *)localFileURL flags:(NSInteger)flags ceilingDirs:(NSArray<NSURL *> *)ceilingDirURLs error:(NSError *__autoreleasing*)error {
+- (instancetype)initWithURL:(NSURL *)localFileURL flags:(NSInteger)flags ceilingDirs:(NSArray<NSURL *> *)ceilingDirURLs error:(NSError **)error {
 	if (!localFileURL.isFileURL || localFileURL.path == nil) {
 		if (error != NULL) *error = [NSError errorWithDomain:NSCocoaErrorDomain code:NSFileReadUnsupportedSchemeError userInfo:@{ NSLocalizedDescriptionKey: NSLocalizedString(@"Invalid file path URL to open.", @"") }];
 		return nil;
@@ -244,7 +244,7 @@ struct GTRemoteCreatePayload {
 	git_remote_callbacks remoteCallbacks;
 };
 
-+ (instancetype _Nullable)cloneFromURL:(NSURL *)originURL toWorkingDirectory:(NSURL *)workdirURL options:(NSDictionary * _Nullable)options error:(NSError *__autoreleasing*)error transferProgressBlock:(void (^ _Nullable)(const git_transfer_progress *, BOOL *stop))transferProgressBlock {
++ (instancetype _Nullable)cloneFromURL:(NSURL *)originURL toWorkingDirectory:(NSURL *)workdirURL options:(NSDictionary * _Nullable)options error:(NSError **)error transferProgressBlock:(void (^ _Nullable)(const git_transfer_progress *, BOOL *stop))transferProgressBlock {
 
 	git_clone_options cloneOptions = GIT_CLONE_OPTIONS_INIT;
 
@@ -314,7 +314,7 @@ struct GTRemoteCreatePayload {
 	return [[self alloc] initWithGitRepository:repository];
 }
 
-- (id)lookUpObjectByGitOid:(const git_oid *)oid objectType:(GTObjectType)type error:(NSError *__autoreleasing*)error {
+- (id)lookUpObjectByGitOid:(const git_oid *)oid objectType:(GTObjectType)type error:(NSError **)error {
 	git_object *obj;
 
 	int gitError = git_object_lookup(&obj, self.git_repository, oid, (git_object_t)type);
@@ -330,30 +330,30 @@ struct GTRemoteCreatePayload {
 	return [GTObject objectWithObj:obj inRepository:self];
 }
 
-- (id)lookUpObjectByGitOid:(const git_oid *)oid error:(NSError *__autoreleasing*)error {
+- (id)lookUpObjectByGitOid:(const git_oid *)oid error:(NSError **)error {
 	return [self lookUpObjectByGitOid:oid objectType:GTObjectTypeAny error:error];
 }
 
-- (id)lookUpObjectByOID:(GTOID *)oid objectType:(GTObjectType)type error:(NSError *__autoreleasing*)error {
+- (id)lookUpObjectByOID:(GTOID *)oid objectType:(GTObjectType)type error:(NSError **)error {
 	return [self lookUpObjectByGitOid:oid.git_oid objectType:type error:error];
 }
 
-- (id)lookUpObjectByOID:(GTOID *)oid error:(NSError *__autoreleasing*)error {
+- (id)lookUpObjectByOID:(GTOID *)oid error:(NSError **)error {
 	return [self lookUpObjectByOID:oid objectType:GTObjectTypeAny error:error];
 }
 
-- (id)lookUpObjectBySHA:(NSString *)sha objectType:(GTObjectType)type error:(NSError *__autoreleasing*)error {
+- (id)lookUpObjectBySHA:(NSString *)sha objectType:(GTObjectType)type error:(NSError **)error {
 	GTOID *oid = [[GTOID alloc] initWithSHA:sha error:error];
 	if (!oid) return nil;
 
 	return [self lookUpObjectByOID:oid objectType:type error:error];
 }
 
-- (id)lookUpObjectBySHA:(NSString *)sha error:(NSError *__autoreleasing*)error {
+- (id)lookUpObjectBySHA:(NSString *)sha error:(NSError **)error {
 	return [self lookUpObjectBySHA:sha objectType:GTObjectTypeAny error:error];
 }
 
-- (id)lookUpObjectByRevParse:(NSString *)spec error:(NSError *__autoreleasing*)error {
+- (id)lookUpObjectByRevParse:(NSString *)spec error:(NSError **)error {
 	git_object *obj;
 	int gitError = git_revparse_single(&obj, self.git_repository, spec.UTF8String);
 	if (gitError < GIT_OK) {
@@ -363,7 +363,7 @@ struct GTRemoteCreatePayload {
 	return [GTObject objectWithObj:obj inRepository:self];
 }
 
-- (GTBranch *)lookUpBranchWithName:(NSString *)branchName type:(GTBranchType)branchType success:(BOOL *)success error:(NSError *__autoreleasing*)error {
+- (GTBranch *)lookUpBranchWithName:(NSString *)branchName type:(GTBranchType)branchType success:(BOOL *)success error:(NSError **)error {
 	NSParameterAssert(branchName != nil);
 
 	git_reference *ref = NULL;
@@ -382,7 +382,7 @@ struct GTRemoteCreatePayload {
 	return [[GTBranch alloc] initWithReference:gtRef];
 }
 
-- (GTReference *)headReferenceWithError:(NSError *__autoreleasing*)error {
+- (GTReference *)headReferenceWithError:(NSError **)error {
 	git_reference *headRef;
 	int gitError = git_repository_head(&headRef, self.git_repository);
 	if (gitError != GIT_OK) {
@@ -399,7 +399,7 @@ struct GTRemoteCreatePayload {
 
 typedef void (^GTRepositoryBranchEnumerationBlock)(GTBranch *branch, BOOL *stop);
 
-- (BOOL)enumerateBranchesWithType:(GTBranchType)type error:(NSError *__autoreleasing*)error usingBlock:(GTRepositoryBranchEnumerationBlock)block {
+- (BOOL)enumerateBranchesWithType:(GTBranchType)type error:(NSError **)error usingBlock:(GTRepositoryBranchEnumerationBlock)block {
 	git_branch_iterator *iter = NULL;
 	git_reference *gitRef = NULL;
 	int gitError = git_branch_iterator_new(&iter, self.git_repository, (git_branch_t)type);
@@ -429,7 +429,7 @@ typedef void (^GTRepositoryBranchEnumerationBlock)(GTBranch *branch, BOOL *stop)
 	return YES;
 }
 
-- (NSArray *)localBranchesWithError:(NSError *__autoreleasing*)error {
+- (NSArray *)localBranchesWithError:(NSError **)error {
 	NSMutableArray *localBranches = [NSMutableArray array];
 	BOOL success = [self enumerateBranchesWithType:GTBranchTypeLocal error:error usingBlock:^(GTBranch *branch, BOOL *stop) {
 		[localBranches addObject:branch];
@@ -440,7 +440,7 @@ typedef void (^GTRepositoryBranchEnumerationBlock)(GTBranch *branch, BOOL *stop)
 	return [localBranches copy];
 }
 
-- (NSArray *)remoteBranchesWithError:(NSError *__autoreleasing*)error {
+- (NSArray *)remoteBranchesWithError:(NSError **)error {
 	NSMutableArray *remoteBranches = [NSMutableArray array];
 	BOOL success = [self enumerateBranchesWithType:GTBranchTypeRemote error:error usingBlock:^(GTBranch *branch, BOOL *stop) {
 		if (![branch.shortName isEqualToString:@"HEAD"])
@@ -452,7 +452,7 @@ typedef void (^GTRepositoryBranchEnumerationBlock)(GTBranch *branch, BOOL *stop)
 	return [remoteBranches copy];
 }
 
-- (NSArray *)branchesWithPrefix:(NSString *)prefix error:(NSError *__autoreleasing*)error {
+- (NSArray *)branchesWithPrefix:(NSString *)prefix error:(NSError **)error {
 	NSArray *references = [self referenceNamesWithError:error];
 	if (references == nil) return nil;
 
@@ -472,7 +472,7 @@ typedef void (^GTRepositoryBranchEnumerationBlock)(GTBranch *branch, BOOL *stop)
 	return branches;
 }
 
-- (NSArray *)branches:(NSError *__autoreleasing*)error {
+- (NSArray *)branches:(NSError **)error {
 	NSArray *localBranches = [self localBranchesWithError:error];
 	if (localBranches == nil) return nil;
 
@@ -491,7 +491,7 @@ typedef void (^GTRepositoryBranchEnumerationBlock)(GTBranch *branch, BOOL *stop)
 	return branches;
 }
 
-- (NSArray *)remoteNamesWithError:(NSError *__autoreleasing*)error {
+- (NSArray *)remoteNamesWithError:(NSError **)error {
 	git_strarray array;
 	int gitError = git_remote_list(&array, self.git_repository);
 	if (gitError < GIT_OK) {
@@ -506,7 +506,7 @@ typedef void (^GTRepositoryBranchEnumerationBlock)(GTBranch *branch, BOOL *stop)
 	return remoteNames;
 }
 
-- (BOOL)deleteRemoteNamed:(NSString *)remoteName error:(NSError *__autoreleasing*)error {
+- (BOOL)deleteRemoteNamed:(NSString *)remoteName error:(NSError **)error {
 	int gitError = git_remote_delete(self.git_repository, [remoteName cStringUsingEncoding:NSUTF8StringEncoding]);
 	if (gitError < GIT_OK) {
 		if (error != NULL) *error = [NSError git_errorFor:gitError description:@"Failed to delete remote."];
@@ -533,7 +533,7 @@ static int GTRepositoryForeachTagCallback(const char *name, git_oid *oid, void *
 	return stop ? GIT_EUSER : 0;
 }
 
-- (BOOL)enumerateTags:(NSError *__autoreleasing*)error block:(GTRepositoryTagEnumerationBlock)block {
+- (BOOL)enumerateTags:(NSError **)error block:(GTRepositoryTagEnumerationBlock)block {
 	NSParameterAssert(block != nil);
 
 	struct GTRepositoryTagEnumerationInfo payload = {
@@ -549,7 +549,7 @@ static int GTRepositoryForeachTagCallback(const char *name, git_oid *oid, void *
 	return YES;
 }
 
-- (NSArray *)allTagsWithError:(NSError *__autoreleasing*)error {
+- (NSArray *)allTagsWithError:(NSError **)error {
 	NSMutableArray *tagArray = [NSMutableArray array];
 	BOOL success = [self enumerateTags:error block:^(GTTag *tag, BOOL *stop) {
 		[tagArray addObject:tag];
@@ -557,14 +557,14 @@ static int GTRepositoryForeachTagCallback(const char *name, git_oid *oid, void *
 	return success == YES ? tagArray : nil;
 }
 
-- (NSUInteger)numberOfCommitsInCurrentBranch:(NSError *__autoreleasing*)error {
+- (NSUInteger)numberOfCommitsInCurrentBranch:(NSError **)error {
 	GTBranch *currentBranch = [self currentBranchWithError:error];
 	if (currentBranch == nil) return NSNotFound;
 
 	return [currentBranch numberOfCommitsWithError:error];
 }
 
-- (GTReference *)createReferenceNamed:(NSString *)name fromOID:(GTOID *)targetOID message:(NSString *)message error:(NSError *__autoreleasing*)error {
+- (GTReference *)createReferenceNamed:(NSString *)name fromOID:(GTOID *)targetOID message:(NSString *)message error:(NSError **)error {
 	NSParameterAssert(name != nil);
 	NSParameterAssert(targetOID != nil);
 
@@ -578,7 +578,7 @@ static int GTRepositoryForeachTagCallback(const char *name, git_oid *oid, void *
 	return [[GTReference alloc] initWithGitReference:ref repository:self];
 }
 
-- (GTReference *)createReferenceNamed:(NSString *)name fromReference:(GTReference *)targetRef message:(NSString *)message error:(NSError *__autoreleasing*)error {
+- (GTReference *)createReferenceNamed:(NSString *)name fromReference:(GTReference *)targetRef message:(NSString *)message error:(NSError **)error {
 	NSParameterAssert(name != nil);
 	NSParameterAssert(targetRef != nil);
 	NSParameterAssert(targetRef.name != nil);
@@ -593,7 +593,7 @@ static int GTRepositoryForeachTagCallback(const char *name, git_oid *oid, void *
 	return [[GTReference alloc] initWithGitReference:ref repository:self];
 }
 
-- (GTBranch *)createBranchNamed:(NSString *)name fromOID:(GTOID *)targetOID message:(NSString *)message error:(NSError *__autoreleasing*)error {
+- (GTBranch *)createBranchNamed:(NSString *)name fromOID:(GTOID *)targetOID message:(NSString *)message error:(NSError **)error {
 	NSParameterAssert(name != nil);
 	NSParameterAssert(targetOID != nil);
 
@@ -607,21 +607,21 @@ static int GTRepositoryForeachTagCallback(const char *name, git_oid *oid, void *
 	return (BOOL) git_repository_is_empty(self.git_repository);
 }
 
-- (GTBranch *)currentBranchWithError:(NSError *__autoreleasing*)error {
+- (GTBranch *)currentBranchWithError:(NSError **)error {
 	GTReference *head = [self headReferenceWithError:error];
 	if (head == nil) return nil;
 
 	return [GTBranch branchWithReference:head];
 }
 
-- (NSArray *)localCommitsRelativeToRemoteBranch:(GTBranch *)remoteBranch error:(NSError *__autoreleasing*)error {
+- (NSArray *)localCommitsRelativeToRemoteBranch:(GTBranch *)remoteBranch error:(NSError **)error {
 	GTBranch *localBranch = [self currentBranchWithError:error];
 	if (localBranch == nil) return nil;
 
 	return [localBranch uniqueCommitsRelativeToBranch:remoteBranch error:error];
 }
 
-- (NSArray *)referenceNamesWithError:(NSError *__autoreleasing*)error {
+- (NSArray *)referenceNamesWithError:(NSError **)error {
 	git_strarray array;
 	int gitError = git_reference_list(&array, self.git_repository);
 	if (gitError < GIT_OK) {
@@ -690,7 +690,7 @@ static int GTRepositoryForeachTagCallback(const char *name, git_oid *oid, void *
 	return message;
 }
 
-- (GTCommit *)mergeBaseBetweenFirstOID:(GTOID *)firstOID secondOID:(GTOID *)secondOID error:(NSError *__autoreleasing*)error {
+- (GTCommit *)mergeBaseBetweenFirstOID:(GTOID *)firstOID secondOID:(GTOID *)secondOID error:(NSError **)error {
 	NSParameterAssert(firstOID != nil);
 	NSParameterAssert(secondOID != nil);
 
@@ -704,11 +704,11 @@ static int GTRepositoryForeachTagCallback(const char *name, git_oid *oid, void *
 	return [self lookUpObjectByGitOid:&mergeBase objectType:GTObjectTypeCommit error:error];
 }
 
-- (GTObjectDatabase *)objectDatabaseWithError:(NSError *__autoreleasing*)error {
+- (GTObjectDatabase *)objectDatabaseWithError:(NSError **)error {
 	return [[GTObjectDatabase alloc] initWithRepository:self error:error];
 }
 
-- (GTConfiguration *)configurationWithError:(NSError *__autoreleasing*)error {
+- (GTConfiguration *)configurationWithError:(NSError **)error {
 	git_config *config = NULL;
 	int gitError = git_repository_config(&config, self.git_repository);
 	if (gitError != GIT_OK) {
@@ -719,7 +719,7 @@ static int GTRepositoryForeachTagCallback(const char *name, git_oid *oid, void *
 	return [[GTConfiguration alloc] initWithGitConfig:config repository:self];
 }
 
-- (GTIndex *)indexWithError:(NSError *__autoreleasing*)error {
+- (GTIndex *)indexWithError:(NSError **)error {
 	git_index *index = NULL;
 	int gitError = git_repository_index(&index, self.git_repository);
 	if (gitError != GIT_OK) {
@@ -764,7 +764,7 @@ static int submoduleEnumerationCallback(git_submodule *git_submodule, const char
 	git_submodule_foreach(self.git_repository, &submoduleEnumerationCallback, &info);
 }
 
-- (GTSubmodule *)submoduleWithName:(NSString *)name error:(NSError *__autoreleasing*)error {
+- (GTSubmodule *)submoduleWithName:(NSString *)name error:(NSError **)error {
 	NSParameterAssert(name != nil);
 
 	git_submodule *submodule;
@@ -810,7 +810,7 @@ static int submoduleEnumerationCallback(git_submodule *git_submodule, const char
 
 #pragma mark Tagging
 
-- (BOOL)createLightweightTagNamed:(NSString *)tagName target:(GTObject *)target error:(NSError *__autoreleasing*)error {
+- (BOOL)createLightweightTagNamed:(NSString *)tagName target:(GTObject *)target error:(NSError **)error {
 	NSParameterAssert(tagName != nil);
 	NSParameterAssert(target != nil);
 
@@ -824,7 +824,7 @@ static int submoduleEnumerationCallback(git_submodule *git_submodule, const char
 	return YES;
 }
 
-- (GTOID *)OIDByCreatingTagNamed:(NSString *)tagName target:(GTObject *)theTarget tagger:(GTSignature *)theTagger message:(NSString *)theMessage error:(NSError *__autoreleasing*)error {
+- (GTOID *)OIDByCreatingTagNamed:(NSString *)tagName target:(GTObject *)theTarget tagger:(GTSignature *)theTagger message:(NSString *)theMessage error:(NSError **)error {
 	git_oid oid;
 	int gitError = git_tag_create(&oid, self.git_repository, [tagName UTF8String], theTarget.git_object, theTagger.git_signature, [theMessage UTF8String], 0);
 	if (gitError != GIT_OK) {
@@ -835,14 +835,14 @@ static int submoduleEnumerationCallback(git_submodule *git_submodule, const char
 	return [GTOID oidWithGitOid:&oid];
 }
 
-- (GTTag *)createTagNamed:(NSString *)tagName target:(GTObject *)theTarget tagger:(GTSignature *)theTagger message:(NSString *)theMessage error:(NSError *__autoreleasing*)error {
+- (GTTag *)createTagNamed:(NSString *)tagName target:(GTObject *)theTarget tagger:(GTSignature *)theTagger message:(NSString *)theMessage error:(NSError **)error {
 	GTOID *oid = [self OIDByCreatingTagNamed:tagName target:theTarget tagger:theTagger message:theMessage error:error];
 	return oid ? [self lookUpObjectByOID:oid objectType:GTObjectTypeTag error:error] : nil;
 }
 
 #pragma mark Checkout
 
-- (BOOL)moveHEADToReference:(GTReference *)reference error:(NSError *__autoreleasing*)error {
+- (BOOL)moveHEADToReference:(GTReference *)reference error:(NSError **)error {
 	NSParameterAssert(reference != nil);
 
 	int gitError = git_repository_set_head(self.git_repository, reference.name.UTF8String);
@@ -853,7 +853,7 @@ static int submoduleEnumerationCallback(git_submodule *git_submodule, const char
 	return gitError == GIT_OK;
 }
 
-- (BOOL)moveHEADToCommit:(GTCommit *)commit error:(NSError *__autoreleasing*)error {
+- (BOOL)moveHEADToCommit:(GTCommit *)commit error:(NSError **)error {
 	NSParameterAssert(commit != nil);
 
 	int gitError = git_repository_set_head_detached(self.git_repository, commit.OID.git_oid);
@@ -864,7 +864,7 @@ static int submoduleEnumerationCallback(git_submodule *git_submodule, const char
 	return gitError == GIT_OK;
 }
 
-- (BOOL)performCheckout:(GTObject *)target options:(GTCheckoutOptions * _Nullable)options error:(NSError *__autoreleasing*)error {
+- (BOOL)performCheckout:(GTObject *)target options:(GTCheckoutOptions * _Nullable)options error:(NSError **)error {
 	int gitError = git_checkout_tree(self.git_repository, target.git_object, options.git_checkoutOptions);
 	if (gitError < GIT_OK) {
 		if (error != NULL) *error = [NSError git_errorFor:gitError description:@"Failed to checkout tree."];
@@ -872,13 +872,13 @@ static int submoduleEnumerationCallback(git_submodule *git_submodule, const char
 	return gitError == GIT_OK;
 }
 
-- (BOOL)checkoutCommit:(GTCommit *)targetCommit options:(GTCheckoutOptions *)options error:(NSError *__autoreleasing*)error {
+- (BOOL)checkoutCommit:(GTCommit *)targetCommit options:(GTCheckoutOptions *)options error:(NSError **)error {
 	BOOL success = [self performCheckout:targetCommit options:options error:error];
 	if (success == NO) return NO;
 	return [self moveHEADToCommit:targetCommit error:error];
 }
 
-- (BOOL)checkoutReference:(GTReference *)targetReference options:(GTCheckoutOptions *)options error:(NSError *__autoreleasing*)error {
+- (BOOL)checkoutReference:(GTReference *)targetReference options:(GTCheckoutOptions *)options error:(NSError **)error {
 	GTOID *targetOID = [targetReference targetOID];
 	GTObject *target = [self lookUpObjectByOID:targetOID error:error];
 	if (target == nil) return NO;
@@ -887,11 +887,11 @@ static int submoduleEnumerationCallback(git_submodule *git_submodule, const char
 	return [self moveHEADToReference:targetReference error:error];
 }
 
-- (BOOL)checkoutTree:(GTTree *)targetTree options:(GTCheckoutOptions * _Nullable)options error:(NSError *__autoreleasing*)error {
+- (BOOL)checkoutTree:(GTTree *)targetTree options:(GTCheckoutOptions * _Nullable)options error:(NSError **)error {
 	return [self performCheckout:targetTree options:options error:error];
 }
 
-- (BOOL)checkoutIndex:(GTIndex *)index options:(GTCheckoutOptions *)options error:(NSError *__autoreleasing*)error {
+- (BOOL)checkoutIndex:(GTIndex *)index options:(GTCheckoutOptions *)options error:(NSError **)error {
 	int gitError = git_checkout_index(self.git_repository, index.git_index, options.git_checkoutOptions);
 	if (gitError < GIT_OK) {
 		if (error != NULL) *error = [NSError git_errorFor:gitError description:@"Failed to checkout index."];
@@ -904,11 +904,11 @@ static int submoduleEnumerationCallback(git_submodule *git_submodule, const char
 	git_attr_cache_flush(self.git_repository);
 }
 
-- (GTFilterList *)filterListWithPath:(NSString *)path blob:(GTBlob *)blob mode:(GTFilterSourceMode)mode options:(GTFilterListOptions)options success:(BOOL *)success error:(NSError *__autoreleasing*)error {
+- (GTFilterList *)filterListWithPath:(NSString *)path blob:(GTBlob *)blob mode:(GTFilterSourceMode)mode options:(GTFilterListOptions)options success:(BOOL *)success error:(NSError **)error {
 	NSParameterAssert(path != nil);
 
 	git_filter_list *list = NULL;
-	int gitError = git_filter_list_load(&list, self.git_repository, blob.git_blob, path.UTF8String, (git_filter_mode_t)mode, (unsigned int)options);
+	int gitError = git_filter_list_load(&list, self.git_repository, blob.git_blob, path.UTF8String, (git_filter_mode_t)mode, options);
 	if (gitError != GIT_OK) {
 		if (success != NULL) *success = NO;
 		if (error != NULL) *error = [NSError git_errorFor:gitError description:@"Failed to load filter list for %@", path];
@@ -924,7 +924,7 @@ static int submoduleEnumerationCallback(git_submodule *git_submodule, const char
 	}
 }
 
-- (BOOL)calculateAhead:(size_t *)ahead behind:(size_t *)behind ofOID:(GTOID *)headOID relativeToOID:(GTOID *)baseOID error:(NSError *__autoreleasing*)error {
+- (BOOL)calculateAhead:(size_t *)ahead behind:(size_t *)behind ofOID:(GTOID *)headOID relativeToOID:(GTOID *)baseOID error:(NSError **)error {
 	NSParameterAssert(headOID != nil);
 	NSParameterAssert(baseOID != nil);
 
@@ -938,7 +938,7 @@ static int submoduleEnumerationCallback(git_submodule *git_submodule, const char
 	return YES;
 }
 
-- (GTEnumerator *)enumeratorForUniqueCommitsFromOID:(GTOID *)fromOID relativeToOID:(GTOID *)relativeOID error:(NSError *__autoreleasing*)error {
+- (GTEnumerator *)enumeratorForUniqueCommitsFromOID:(GTOID *)fromOID relativeToOID:(GTOID *)relativeOID error:(NSError **)error {
 	NSParameterAssert(fromOID != nil);
 	NSParameterAssert(relativeOID != nil);
 
@@ -954,7 +954,7 @@ static int submoduleEnumerationCallback(git_submodule *git_submodule, const char
 	return enumerator;
 }
 
-- (BOOL)calculateState:(GTRepositoryStateType *)state withError:(NSError *__autoreleasing*)error {
+- (BOOL)calculateState:(GTRepositoryStateType *)state withError:(NSError **)error {
 	NSParameterAssert(state != NULL);
 
 	int result = git_repository_state(self.git_repository);
@@ -967,7 +967,7 @@ static int submoduleEnumerationCallback(git_submodule *git_submodule, const char
 	return YES;
 }
 
-- (BOOL)cleanupStateWithError:(NSError *__autoreleasing*)error {
+- (BOOL)cleanupStateWithError:(NSError **)error {
 	int errorCode = git_repository_state_cleanup(self.git_repository);
 	if (errorCode != GIT_OK) {
 		if (error != NULL) *error = [NSError git_errorFor:errorCode description:@"Failed to clean up repository state"];
@@ -977,7 +977,7 @@ static int submoduleEnumerationCallback(git_submodule *git_submodule, const char
 
 #pragma mark Notes
 
-- (GTNote *)createNote:(NSString *)note target:(GTObject *)theTarget referenceName:(NSString *)referenceName author:(GTSignature *)author committer:(GTSignature *)committer overwriteIfExists:(BOOL)overwrite error:(NSError *__autoreleasing*)error {
+- (GTNote *)createNote:(NSString *)note target:(GTObject *)theTarget referenceName:(NSString *)referenceName author:(GTSignature *)author committer:(GTSignature *)committer overwriteIfExists:(BOOL)overwrite error:(NSError **)error {
 	git_oid oid;
 
 	int gitError = git_note_create(&oid, self.git_repository, referenceName.UTF8String, author.git_signature, committer.git_signature, theTarget.OID.git_oid, [note UTF8String], overwrite ? 1 : 0);
@@ -990,7 +990,7 @@ static int submoduleEnumerationCallback(git_submodule *git_submodule, const char
 	return [[GTNote alloc] initWithTargetOID:theTarget.OID repository:self referenceName:referenceName error:error];
 }
 
-- (BOOL)removeNoteFromObject:(GTObject *)parentObject referenceName:(NSString *)referenceName author:(GTSignature *)author committer:(GTSignature *)committer error:(NSError *__autoreleasing*)error {
+- (BOOL)removeNoteFromObject:(GTObject *)parentObject referenceName:(NSString *)referenceName author:(GTSignature *)author committer:(GTSignature *)committer error:(NSError **)error {
 	int gitError = git_note_remove(self.git_repository, referenceName.UTF8String, author.git_signature, committer.git_signature, parentObject.OID.git_oid);
 	if (gitError != GIT_OK) {
 		if (error != NULL) *error = [NSError git_errorFor:gitError description:@"Failed to delete note from %@", parentObject];
@@ -1000,7 +1000,7 @@ static int submoduleEnumerationCallback(git_submodule *git_submodule, const char
 	return YES;
 }
 
-- (BOOL)enumerateNotesWithReferenceName:(NSString *)referenceName error:(NSError *__autoreleasing*)error usingBlock:(void (^)(GTNote *note, GTObject *object, NSError *error, BOOL *stop))block {
+- (BOOL)enumerateNotesWithReferenceName:(NSString *)referenceName error:(NSError **)error usingBlock:(void (^)(GTNote *note, GTObject *object, NSError *error, BOOL *stop))block {
 	git_note_iterator *iter = NULL;
 
 	int gitError = git_note_iterator_new(&iter, self.git_repository, referenceName.UTF8String);

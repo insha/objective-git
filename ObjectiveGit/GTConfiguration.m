@@ -103,7 +103,7 @@
 	return i;
 }
 
-- (BOOL)deleteValueForKey:(NSString *)key error:(NSError *__autoreleasing*)error {
+- (BOOL)deleteValueForKey:(NSString *)key error:(NSError **)error {
 	git_config_delete_entry(self.git_config, key.UTF8String);
 
 	return YES;

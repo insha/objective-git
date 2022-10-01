@@ -69,7 +69,7 @@ int GTRemotePushTransferProgressCallback(unsigned int current, unsigned int tota
 
 #pragma mark - Fetch
 
-- (BOOL)fetchRemote:(GTRemote *)remote withOptions:(NSDictionary *)options error:(NSError *__autoreleasing*)error progress:(GTRemoteFetchTransferProgressBlock)progressBlock {
+- (BOOL)fetchRemote:(GTRemote *)remote withOptions:(NSDictionary *)options error:(NSError **)error progress:(GTRemoteFetchTransferProgressBlock)progressBlock {
 
 	GTCredentialProvider *credProvider = options[GTRepositoryRemoteOptionsCredentialProvider];
 	GTRemoteConnectionInfo connectionInfo = {
@@ -137,7 +137,7 @@ int GTFetchHeadEntriesCallback(const char *ref_name, const char *remote_url, con
 	return (stop == YES ? GIT_EUSER : 0);
 }
 
-- (BOOL)enumerateFetchHeadEntriesWithError:(NSError *__autoreleasing*)error usingBlock:(void (^)(GTFetchHeadEntry *fetchHeadEntry, BOOL *stop))block {
+- (BOOL)enumerateFetchHeadEntriesWithError:(NSError **)error usingBlock:(void (^)(GTFetchHeadEntry *fetchHeadEntry, BOOL *stop))block {
 	NSParameterAssert(block != nil);
 	
 	GTEnumerateHeadEntriesPayload payload = {
@@ -154,7 +154,7 @@ int GTFetchHeadEntriesCallback(const char *ref_name, const char *remote_url, con
 	return YES;
 }
 
-- (NSArray *)fetchHeadEntriesWithError:(NSError *__autoreleasing*)error {
+- (NSArray *)fetchHeadEntriesWithError:(NSError **)error {
 	NSMutableArray *entries = [NSMutableArray array];
 	
 	[self enumerateFetchHeadEntriesWithError:error usingBlock:^(GTFetchHeadEntry *fetchHeadEntry, BOOL *stop) {
@@ -168,14 +168,14 @@ int GTFetchHeadEntriesCallback(const char *ref_name, const char *remote_url, con
 
 #pragma mark - Push (Public)
 
-- (BOOL)pushBranch:(GTBranch *)branch toRemote:(GTRemote *)remote withOptions:(NSDictionary *)options error:(NSError *__autoreleasing*)error progress:(GTRemotePushTransferProgressBlock)progressBlock {
+- (BOOL)pushBranch:(GTBranch *)branch toRemote:(GTRemote *)remote withOptions:(NSDictionary *)options error:(NSError **)error progress:(GTRemotePushTransferProgressBlock)progressBlock {
 	NSParameterAssert(branch != nil);
 	NSParameterAssert(remote != nil);
 
 	return [self pushBranches:@[ branch ] toRemote:remote withOptions:options error:error progress:progressBlock];
 }
 
-- (BOOL)pushBranches:(NSArray *)branches toRemote:(GTRemote *)remote withOptions:(NSDictionary *)options error:(NSError *__autoreleasing*)error progress:(GTRemotePushTransferProgressBlock)progressBlock {
+- (BOOL)pushBranches:(NSArray *)branches toRemote:(GTRemote *)remote withOptions:(NSDictionary *)options error:(NSError **)error progress:(GTRemotePushTransferProgressBlock)progressBlock {
 	NSParameterAssert(branches != nil);
 	NSParameterAssert(branches.count != 0);
 	NSParameterAssert(remote != nil);
@@ -226,7 +226,7 @@ int GTFetchHeadEntriesCallback(const char *ref_name, const char *remote_url, con
 	return [self pushRefspecs:refspecs toRemote:remote withOptions:options error:error progress:progressBlock];
 }
 
-- (BOOL)pushNotes:(NSString *)noteRef toRemote:(GTRemote *)remote withOptions:(NSDictionary *)options error:(NSError *__autoreleasing*)error progress:(GTRemotePushTransferProgressBlock)progressBlock {
+- (BOOL)pushNotes:(NSString *)noteRef toRemote:(GTRemote *)remote withOptions:(NSDictionary *)options error:(NSError **)error progress:(GTRemotePushTransferProgressBlock)progressBlock {
 	NSParameterAssert(remote != nil);
 
 	if (noteRef == nil) {
@@ -243,7 +243,7 @@ int GTFetchHeadEntriesCallback(const char *ref_name, const char *remote_url, con
 }
 
 #pragma mark - Deletion (Public)
-- (BOOL)deleteBranch:(GTBranch *)branch fromRemote:(GTRemote *)remote withOptions:(NSDictionary *)options error:(NSError *__autoreleasing*)error {
+- (BOOL)deleteBranch:(GTBranch *)branch fromRemote:(GTRemote *)remote withOptions:(NSDictionary *)options error:(NSError **)error {
 	NSParameterAssert(branch != nil);
 	NSParameterAssert(remote != nil);
 		
@@ -254,7 +254,7 @@ int GTFetchHeadEntriesCallback(const char *ref_name, const char *remote_url, con
 
 #pragma mark - Push (Private)
 
-- (BOOL)pushRefspecs:(NSArray *)refspecs toRemote:(GTRemote *)remote withOptions:(NSDictionary *)options error:(NSError *__autoreleasing*)error progress:(GTRemotePushTransferProgressBlock)progressBlock {
+- (BOOL)pushRefspecs:(NSArray *)refspecs toRemote:(GTRemote *)remote withOptions:(NSDictionary *)options error:(NSError **)error progress:(GTRemotePushTransferProgressBlock)progressBlock {
 
 	int gitError;
 	GTCredentialProvider *credProvider = options[GTRepositoryRemoteOptionsCredentialProvider];

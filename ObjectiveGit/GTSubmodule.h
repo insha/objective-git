@@ -109,7 +109,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// This will mutate properties on the receiver.
 ///
 /// Returns whether reloading succeeded.
-- (BOOL)reload:(NSError *__autoreleasing*)error;
+- (BOOL)reload:(NSError **)error;
 
 /// Write a new ignore rule to disk and get the resulting submodule. The
 /// receiver will not have the new ignore rule. To update the receiver, call
@@ -119,23 +119,23 @@ NS_ASSUME_NONNULL_BEGIN
 /// error      - The error if one occurred.
 ///
 /// Returns the updated submodule or nil if an error occurred.
-- (GTSubmodule * _Nullable)submoduleByUpdatingIgnoreRule:(GTSubmoduleIgnoreRule)ignoreRule error:(NSError *__autoreleasing*)error;
+- (GTSubmodule * _Nullable)submoduleByUpdatingIgnoreRule:(GTSubmoduleIgnoreRule)ignoreRule error:(NSError **)error;
 
 /// Synchronizes the submodule repository's configuration files with the settings
 /// from the parent repository.
 ///
 /// Returns whether the synchronization succeeded.
-- (BOOL)sync:(NSError *__autoreleasing*)error;
+- (BOOL)sync:(NSError **)error;
 
 /// Opens the submodule repository.
 ///
 /// If the submodule is not currently checked out, this will fail.
 ///
 /// Returns the opened repository, or nil if an error occurs.
-- (GTRepository * _Nullable)submoduleRepository:(NSError *__autoreleasing*)error;
+- (GTRepository * _Nullable)submoduleRepository:(NSError **)error;
 
 /// Calls `-statusWithIgnoreRule:error:` with the submodule's ignore rule.
-- (GTSubmoduleStatus)status:(NSError *__autoreleasing*)error;
+- (GTSubmoduleStatus)status:(NSError **)error;
 
 /// Determine the status for the submodule using the given ignore rule.
 ///
@@ -143,7 +143,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// error      - The error if one occurred.
 ///
 /// Returns the status or `GTSubmoduleStatusUnknown` if an error occurred.
-- (GTSubmoduleStatus)statusWithIgnoreRule:(GTSubmoduleIgnoreRule)ignoreRule error:(NSError *__autoreleasing*)error;
+- (GTSubmoduleStatus)statusWithIgnoreRule:(GTSubmoduleIgnoreRule)ignoreRule error:(NSError **)error;
 
 /// Initializes the submodule by copying its information into the parent
 /// repository's `.git/config` file. This is equivalent to `git submodule init`
@@ -154,7 +154,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// error     - If not NULL, set to any error that occurs.
 ///
 /// Returns whether the initialization succeeded.
-- (BOOL)writeToParentConfigurationDestructively:(BOOL)overwrite error:(NSError *__autoreleasing*)error;
+- (BOOL)writeToParentConfigurationDestructively:(BOOL)overwrite error:(NSError **)error;
 
 /// Add the current HEAD to the parent repository's index.
 ///
@@ -163,7 +163,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// error - The error if one occurred.
 ///
 /// Returns whether the add was successful.
-- (BOOL)addToIndex:(NSError *__autoreleasing*)error;
+- (BOOL)addToIndex:(NSError **)error;
 
 @end
 

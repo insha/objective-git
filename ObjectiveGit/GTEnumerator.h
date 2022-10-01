@@ -73,7 +73,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// error - If not NULL, set to any error that occurs.
 ///
 /// Returns an initialized enumerator, or nil if an error occurs.
-- (id _Nullable)initWithRepository:(GTRepository *)repo error:(NSError *__autoreleasing*)error NS_DESIGNATED_INITIALIZER;
+- (id _Nullable)initWithRepository:(GTRepository *)repo error:(NSError **)error NS_DESIGNATED_INITIALIZER;
 
 /// Marks a commit to start traversal from.
 ///
@@ -82,7 +82,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// error - If not NULL, this will be set to any error that occurs.
 ///
 /// Returns whether pushing the commit was successful.
-- (BOOL)pushSHA:(NSString *)sha error:(NSError *__autoreleasing*)error;
+- (BOOL)pushSHA:(NSString *)sha error:(NSError **)error;
 
 /// Pushes all references matching `refGlob`.
 ///
@@ -90,14 +90,14 @@ NS_ASSUME_NONNULL_BEGIN
 /// error   - If not NULL, this will be set to any error that occurs.
 ///
 /// Returns whether pushing matching references was successful.
-- (BOOL)pushGlob:(NSString *)refGlob error:(NSError *__autoreleasing*)error;
+- (BOOL)pushGlob:(NSString *)refGlob error:(NSError **)error;
 
 /// Push HEAD reference.
 ///
 /// error - If not NULL, this will be set to any error that occurs.
 ///
 /// Returns whether pushing the HEAD reference was successful.
-- (BOOL)pushHEAD:(NSError *__autoreleasing*)error;
+- (BOOL)pushHEAD:(NSError **)error;
 
 /// Push a reference by name.
 ///
@@ -105,7 +105,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// error   - If not NULL, this will be set to any error that occurs.
 ///
 /// Returns whether pushing the reference name was successful.
-- (BOOL)pushReferenceName:(NSString *)refName error:(NSError *__autoreleasing*)error;
+- (BOOL)pushReferenceName:(NSString *)refName error:(NSError **)error;
 
 /// Hides the specified commit and all of its ancestors when enumerating.
 ///
@@ -114,7 +114,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// error - If not NULL, this will be set to any error that occurs.
 ///
 /// Returns whether marking the SHA for hiding was successful.
-- (BOOL)hideSHA:(NSString *)sha error:(NSError *__autoreleasing*)error;
+- (BOOL)hideSHA:(NSString *)sha error:(NSError **)error;
 
 /// Hides all references matching `refGlob`.
 ///
@@ -122,14 +122,14 @@ NS_ASSUME_NONNULL_BEGIN
 /// error   - If not NULL, this will be set to any error that occurs.
 ///
 /// Returns whether marking matching references for hiding was successful.
-- (BOOL)hideGlob:(NSString *)refGlob error:(NSError *__autoreleasing*)error;
+- (BOOL)hideGlob:(NSString *)refGlob error:(NSError **)error;
 
 /// Hide HEAD reference.
 ///
 /// error - If not NULL, this will be set to any error that occurs.
 ///
 /// Returns whether marking HEAD for hiding was successful.
-- (BOOL)hideHEAD:(NSError *__autoreleasing*)error;
+- (BOOL)hideHEAD:(NSError **)error;
 
 
 /// Hide a reference by name.
@@ -138,7 +138,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// error   - If not NULL, this will be set to any error that occurs.
 ///
 /// Returns whether hiding the reference name was successful.
-- (BOOL)hideReferenceName:(NSString *)refName error:(NSError *__autoreleasing*)error;
+- (BOOL)hideReferenceName:(NSString *)refName error:(NSError **)error;
 
 /// Resets the receiver, putting it back into a clean state for reuse, and
 /// replacing the receiver's `options`.
@@ -149,7 +149,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// error - If not NULL, set to any error that occurs during traversal.
 ///
 /// Returns a (possibly empty) array of GTCommits, or nil if an error occurs.
-- (NSArray<GTCommit *> * _Nullable)allObjectsWithError:(NSError *__autoreleasing*)error;
+- (NSArray<GTCommit *> * _Nullable)allObjectsWithError:(NSError **)error;
 
 /// Get the next OID.
 ///
@@ -159,7 +159,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// error   - If not NULL, set to any error that occurs during traversal.
 ///
 /// Returns nil if an error occurs or the enumeration is done.
-- (GTOID * _Nullable)nextOIDWithSuccess:(BOOL * _Nullable)success error:(NSError *__autoreleasing*)error;
+- (GTOID * _Nullable)nextOIDWithSuccess:(BOOL * _Nullable)success error:(NSError **)error;
 
 /// Gets the next commit.
 ///
@@ -169,7 +169,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// error   - If not NULL, set to any error that occurs during traversal.
 ///
 /// Returns nil if an error occurs or the receiver is exhausted.
-- (GTCommit * _Nullable)nextObjectWithSuccess:(BOOL * _Nullable)success error:(NSError *__autoreleasing*)error;
+- (GTCommit * _Nullable)nextObjectWithSuccess:(BOOL * _Nullable)success error:(NSError **)error;
 
 /// Counts the number of commits that were not enumerated, completely exhausting
 /// the receiver.
@@ -177,7 +177,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// error - If not NULL, set to any error that occurs during traversal.
 ///
 /// Returns the number of commits remaining, or `NSNotFound` if an error occurs.
-- (NSUInteger)countRemainingObjects:(NSError *__autoreleasing*)error;
+- (NSUInteger)countRemainingObjects:(NSError **)error;
 
 @end
 

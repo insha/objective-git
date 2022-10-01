@@ -70,7 +70,7 @@
 
 #pragma mark API
 
-- (instancetype)initWithEntry:(const git_tree_entry *)theEntry parentTree:(GTTree *)parent error:(NSError *__autoreleasing*)error {
+- (instancetype)initWithEntry:(const git_tree_entry *)theEntry parentTree:(GTTree *)parent error:(NSError **)error {
 	NSParameterAssert(theEntry != NULL);
 	
 	self = [super init];
@@ -89,7 +89,7 @@
 	return self;
 }
 
-+ (instancetype)entryWithEntry:(const git_tree_entry *)theEntry parentTree:(GTTree *)parent error:(NSError *__autoreleasing*)error {
++ (instancetype)entryWithEntry:(const git_tree_entry *)theEntry parentTree:(GTTree *)parent error:(NSError **)error {
 	return [[self alloc] initWithEntry:theEntry parentTree:parent error:error];
 }
 
@@ -121,7 +121,7 @@
     return self.tree.repository;
 }
 
-- (GTObject *)GTObject:(NSError *__autoreleasing*)error {
+- (GTObject *)GTObject:(NSError **)error {
 	return [GTObject objectWithTreeEntry:self error:error];
 }
 
@@ -130,11 +130,11 @@
 
 @implementation GTObject (GTTreeEntry)
 
-+ (instancetype)objectWithTreeEntry:(GTTreeEntry *)treeEntry error:(NSError *__autoreleasing*)error {
++ (instancetype)objectWithTreeEntry:(GTTreeEntry *)treeEntry error:(NSError **)error {
     return [[self alloc] initWithTreeEntry:treeEntry error:error];
 }
 
-- (instancetype)initWithTreeEntry:(GTTreeEntry *)treeEntry error:(NSError *__autoreleasing*)error {
+- (instancetype)initWithTreeEntry:(GTTreeEntry *)treeEntry error:(NSError **)error {
     git_object *obj;
     int gitError = git_tree_entry_to_object(&obj, treeEntry.repository.git_repository, treeEntry.git_tree_entry);
     if (gitError < GIT_OK) {

@@ -67,7 +67,7 @@ NS_ASSUME_NONNULL_BEGIN
 ///
 /// Returns an index which represents the result of the merge, or nil if an error
 /// occurred.
-- (GTIndex * _Nullable)merge:(GTCommit *)otherCommit error:(NSError *__autoreleasing*)error;
+- (GTIndex * _Nullable)merge:(GTCommit *)otherCommit error:(NSError **)error;
 
 @end
 

@@ -50,7 +50,7 @@
 
 #pragma mark Application
 
-- (NSData *)applyToData:(NSData *)inputData error:(NSError *__autoreleasing*)error {
+- (NSData *)applyToData:(NSData *)inputData error:(NSError **)error {
 	NSParameterAssert(inputData != nil);
 
 	git_buf input = inputData.git_buf;
@@ -65,7 +65,7 @@
 	return [NSData git_dataWithBuffer:&output];
 }
 
-- (NSData *)applyToPath:(NSString *)relativePath inRepository:(GTRepository *)repository error:(NSError *__autoreleasing*)error {
+- (NSData *)applyToPath:(NSString *)relativePath inRepository:(GTRepository *)repository error:(NSError **)error {
 	NSParameterAssert(relativePath != nil);
 	NSParameterAssert(repository != nil);
 
@@ -84,7 +84,7 @@
 	return [NSData git_dataWithBuffer:&output];
 }
 
-- (NSData *)applyToBlob:(GTBlob *)blob error:(NSError *__autoreleasing*)error {
+- (NSData *)applyToBlob:(GTBlob *)blob error:(NSError **)error {
 	NSParameterAssert(blob != nil);
 
 	git_buf output = GIT_BUF_INIT_CONST(0, NULL);

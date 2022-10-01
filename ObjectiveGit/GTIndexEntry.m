@@ -55,7 +55,7 @@
 	return nil;
 }
 
-- (instancetype)initWithGitIndexEntry:(const git_index_entry *)entry index:(GTIndex *)index error:(NSError *__autoreleasing*)error {
+- (instancetype)initWithGitIndexEntry:(const git_index_entry *)entry index:(GTIndex *)index error:(NSError **)error {
 	NSParameterAssert(entry != NULL);
 
 	self = [super init];
@@ -111,7 +111,7 @@
 	return self.index.repository;
 }
 
-- (GTObject *)GTObject:(NSError *__autoreleasing*)error {
+- (GTObject *)GTObject:(NSError **)error {
 	return [GTObject objectWithIndexEntry:self error:error];
 }
 
@@ -119,11 +119,11 @@
 
 @implementation GTObject (GTIndexEntry)
 
-+ (instancetype)objectWithIndexEntry:(GTIndexEntry *)indexEntry error:(NSError *__autoreleasing*)error {
++ (instancetype)objectWithIndexEntry:(GTIndexEntry *)indexEntry error:(NSError **)error {
 	return [[self alloc] initWithIndexEntry:indexEntry error:error];
 }
 
-- (instancetype)initWithIndexEntry:(GTIndexEntry *)indexEntry error:(NSError *__autoreleasing*)error {
+- (instancetype)initWithIndexEntry:(GTIndexEntry *)indexEntry error:(NSError **)error {
 	git_object *obj;
 	int gitError = git_object_lookup(&obj, indexEntry.repository.git_repository, indexEntry.OID.git_oid, (git_object_t)GTObjectTypeAny);
 

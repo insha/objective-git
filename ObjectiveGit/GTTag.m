@@ -73,7 +73,7 @@
 	return (git_tag *) self.git_object;
 }
 
-- (id)objectByPeelingTagError:(NSError *__autoreleasing*)error {
+- (id)objectByPeelingTagError:(NSError **)error {
 	git_object *target = nil;
 	int gitError = git_tag_peel(&target, self.git_tag);
 	if (gitError != GIT_OK) {
@@ -84,7 +84,7 @@
 	return [[GTObject alloc] initWithObj:target inRepository:self.repository];
 }
 
-- (BOOL)delete:(NSError *__autoreleasing*)error {
+- (BOOL)delete:(NSError **)error {
 	int gitError = git_tag_delete(self.repository.git_repository, self.name.UTF8String);
 	if (gitError != GIT_OK) {
 		if (error) *error = [NSError git_errorFor:gitError description:@"Tag deletion failed"];

@@ -178,7 +178,7 @@ typedef NS_ENUM(NSInteger, GTRepositoryStateType) {
 /// error   - The error if one occurs.
 ///
 /// Returns the initialized repository, or nil if an error occurred.
-+ (instancetype _Nullable)initializeEmptyRepositoryAtFileURL:(NSURL *)fileURL options:(NSDictionary * _Nullable)options error:(NSError *__autoreleasing*)error;
++ (instancetype _Nullable)initializeEmptyRepositoryAtFileURL:(NSURL *)fileURL options:(NSDictionary * _Nullable)options error:(NSError **)error;
 
 /// Convenience class initializer which uses the default options.
 ///
@@ -186,7 +186,7 @@ typedef NS_ENUM(NSInteger, GTRepositoryStateType) {
 /// error        - The error if one occurs.
 ///
 /// Returns the initialized repository, or nil if an error occurred.
-+ (instancetype _Nullable)repositoryWithURL:(NSURL *)localFileURL error:(NSError *__autoreleasing*)error;
++ (instancetype _Nullable)repositoryWithURL:(NSURL *)localFileURL error:(NSError **)error;
 
 /// Convenience initializer which uses the default options.
 ///
@@ -194,7 +194,7 @@ typedef NS_ENUM(NSInteger, GTRepositoryStateType) {
 /// error        - The error if one occurs.
 ///
 /// Returns the initialized repository, or nil if an error occurred.
-- (instancetype _Nullable)initWithURL:(NSURL *)localFileURL error:(NSError *__autoreleasing*)error;
+- (instancetype _Nullable)initWithURL:(NSURL *)localFileURL error:(NSError **)error;
 
 /// Convenience initializer to find and open a repository with extended controls.
 ///
@@ -205,7 +205,7 @@ typedef NS_ENUM(NSInteger, GTRepositoryStateType) {
 /// error           - The error if one occurs.
 ///
 /// Returns the initialized repository, or nil if an error occurred.
-- (instancetype _Nullable)initWithURL:(NSURL *)localFileURL flags:(NSInteger)flags ceilingDirs:(NSArray<NSURL *> * _Nullable)ceilingDirURLs error:(NSError *__autoreleasing*)error;
+- (instancetype _Nullable)initWithURL:(NSURL *)localFileURL flags:(NSInteger)flags ceilingDirs:(NSArray<NSURL *> * _Nullable)ceilingDirURLs error:(NSError **)error;
 
 - (instancetype)init NS_UNAVAILABLE;
 
@@ -239,16 +239,16 @@ typedef NS_ENUM(NSInteger, GTRepositoryStateType) {
 ///                         May be NULL.
 ///
 /// returns nil (and fills the error parameter) if an error occurred, or a GTRepository object if successful.
-+ (instancetype _Nullable)cloneFromURL:(NSURL *)originURL toWorkingDirectory:(NSURL *)workdirURL options:(NSDictionary * _Nullable)options error:(NSError *__autoreleasing*)error transferProgressBlock:(void (^ _Nullable)(const git_transfer_progress *, BOOL *stop))transferProgressBlock;
++ (instancetype _Nullable)cloneFromURL:(NSURL *)originURL toWorkingDirectory:(NSURL *)workdirURL options:(NSDictionary * _Nullable)options error:(NSError **)error transferProgressBlock:(void (^ _Nullable)(const git_transfer_progress *, BOOL *stop))transferProgressBlock;
 
 /// Lookup objects in the repo by oid or sha1
-- (id _Nullable)lookUpObjectByOID:(GTOID *)oid objectType:(GTObjectType)type error:(NSError *__autoreleasing*)error;
-- (id _Nullable)lookUpObjectByOID:(GTOID *)oid error:(NSError *__autoreleasing*)error;
-- (id _Nullable)lookUpObjectBySHA:(NSString *)sha objectType:(GTObjectType)type error:(NSError *__autoreleasing*)error;
-- (id _Nullable)lookUpObjectBySHA:(NSString *)sha error:(NSError *__autoreleasing*)error;
+- (id _Nullable)lookUpObjectByOID:(GTOID *)oid objectType:(GTObjectType)type error:(NSError **)error;
+- (id _Nullable)lookUpObjectByOID:(GTOID *)oid error:(NSError **)error;
+- (id _Nullable)lookUpObjectBySHA:(NSString *)sha objectType:(GTObjectType)type error:(NSError **)error;
+- (id _Nullable)lookUpObjectBySHA:(NSString *)sha error:(NSError **)error;
 
 /// Lookup an object in the repo using a revparse spec
-- (id _Nullable)lookUpObjectByRevParse:(NSString *)spec error:(NSError *__autoreleasing*)error;
+- (id _Nullable)lookUpObjectByRevParse:(NSString *)spec error:(NSError **)error;
 
 /// Finds the branch with the given name and type.
 ///
@@ -262,7 +262,7 @@ typedef NS_ENUM(NSInteger, GTRepositoryStateType) {
 ///
 /// Returns the matching branch, or nil if no match was found or an error occurs.
 /// The latter two cases can be distinguished by checking `success`.
-- (GTBranch * _Nullable)lookUpBranchWithName:(NSString *)branchName type:(GTBranchType)branchType success:(BOOL * _Nullable)success error:(NSError *__autoreleasing*)error;
+- (GTBranch * _Nullable)lookUpBranchWithName:(NSString *)branchName type:(GTBranchType)branchType success:(BOOL * _Nullable)success error:(NSError **)error;
 
 /// List all references in the repository
 ///
@@ -271,14 +271,14 @@ typedef NS_ENUM(NSInteger, GTRepositoryStateType) {
 ///
 /// returns an array of NSStrings holding the names of the references
 /// returns nil if an error occurred and fills the error parameter
-- (NSArray<NSString *> * _Nullable)referenceNamesWithError:(NSError *__autoreleasing*)error;
+- (NSArray<NSString *> * _Nullable)referenceNamesWithError:(NSError **)error;
 
 /// Get the HEAD reference.
 ///
 /// error - If not NULL, set to any error that occurs.
 ///
 /// Returns a GTReference or nil if an error occurs.
-- (GTReference * _Nullable)headReferenceWithError:(NSError *__autoreleasing*)error;
+- (GTReference * _Nullable)headReferenceWithError:(NSError **)error;
 
 /// Move HEAD reference safely, since deleting and recreating HEAD is always wrong.
 ///
@@ -286,7 +286,7 @@ typedef NS_ENUM(NSInteger, GTRepositoryStateType) {
 /// error     - If not NULL, set to any error that occurs.
 ///
 /// Returns NO if an error occurs.
-- (BOOL)moveHEADToReference:(GTReference *)reference error:(NSError *__autoreleasing*)error;
+- (BOOL)moveHEADToReference:(GTReference *)reference error:(NSError **)error;
 
 /// Move HEAD reference safely, since deleting and recreating HEAD is always wrong.
 ///
@@ -294,21 +294,21 @@ typedef NS_ENUM(NSInteger, GTRepositoryStateType) {
 /// error  - If not NULL, set to any error that occurs.
 ///
 /// Returns NO if an error occurs.
-- (BOOL)moveHEADToCommit:(GTCommit *)commit error:(NSError *__autoreleasing*)error;
+- (BOOL)moveHEADToCommit:(GTCommit *)commit error:(NSError **)error;
 
 /// Get the local branches.
 ///
 /// error - If not NULL, set to any error that occurs.
 ///
 /// Returns an array of GTBranches or nil if an error occurs.
-- (NSArray<GTBranch *> * _Nullable)localBranchesWithError:(NSError *__autoreleasing*)error;
+- (NSArray<GTBranch *> * _Nullable)localBranchesWithError:(NSError **)error;
 
 /// Get the remote branches.
 ///
 /// error - If not NULL, set to any error that occurs.
 ///
 /// Returns an array of GTBranches or nil if an error occurs.
-- (NSArray<GTBranch *> * _Nullable)remoteBranchesWithError:(NSError *__autoreleasing*)error;
+- (NSArray<GTBranch *> * _Nullable)remoteBranchesWithError:(NSError **)error;
 
 /// Get branches with names sharing a given prefix.
 ///
@@ -316,7 +316,7 @@ typedef NS_ENUM(NSInteger, GTRepositoryStateType) {
 /// error  - If not NULL, set to any error that occurs.
 ///
 /// Returns an array of GTBranches or nil if an error occurs.
-- (NSArray<GTBranch *> * _Nullable)branchesWithPrefix:(NSString *)prefix error:(NSError *__autoreleasing*)error;
+- (NSArray<GTBranch *> * _Nullable)branchesWithPrefix:(NSString *)prefix error:(NSError **)error;
 
 /// Get the local and remote branches and merge them together by combining local
 /// branches with their remote branch, if they have one.
@@ -324,35 +324,35 @@ typedef NS_ENUM(NSInteger, GTRepositoryStateType) {
 /// error - If not NULL, set to any error that occurs.
 ///
 /// Returns an array of GTBranches or nil if an error occurs.
-- (NSArray<GTBranch *> * _Nullable)branches:(NSError *__autoreleasing*)error;
+- (NSArray<GTBranch *> * _Nullable)branches:(NSError **)error;
 
 /// List all remotes in the repository
 ///
 /// error - will be filled if an error occurs
 ///
 /// returns an array of NSStrings holding the names of the remotes, or nil if an error occurred
-- (NSArray<NSString *> * _Nullable)remoteNamesWithError:(NSError *__autoreleasing*)error;
+- (NSArray<NSString *> * _Nullable)remoteNamesWithError:(NSError **)error;
 
 /// Delete the given remote by name
 ///
 /// error - If not NULL, set to any error that occurs.
 ///
 /// returns YES if the deletion succeeded, otherwise NO.
-- (BOOL)deleteRemoteNamed:(NSString *)remoteName error:(NSError *__autoreleasing*)error;
+- (BOOL)deleteRemoteNamed:(NSString *)remoteName error:(NSError **)error;
 
 /// Get all tags in the repository.
 ///
 /// error - If not NULL, set to any error that occurs.
 ///
 /// Returns an array of GTTag or nil if an error occurs.
-- (NSArray<GTTag *> * _Nullable)allTagsWithError:(NSError *__autoreleasing*)error;
+- (NSArray<GTTag *> * _Nullable)allTagsWithError:(NSError **)error;
 
 /// Count all commits in the current branch (HEAD)
 ///
 /// error(out) - will be filled if an error occurs
 ///
 /// returns number of commits in the current branch or NSNotFound if an error occurred
-- (NSUInteger)numberOfCommitsInCurrentBranch:(NSError *__autoreleasing*)error;
+- (NSUInteger)numberOfCommitsInCurrentBranch:(NSError **)error;
 
 /// Creates a direct reference to the given OID.
 ///
@@ -363,7 +363,7 @@ typedef NS_ENUM(NSInteger, GTRepositoryStateType) {
 /// error     - If not NULL, set to any error that occurs.
 ///
 /// Returns the created ref, or nil if an error occurred.
-- (GTReference * _Nullable)createReferenceNamed:(NSString *)name fromOID:(GTOID *)targetOID message:(NSString * _Nullable)message error:(NSError *__autoreleasing*)error;
+- (GTReference * _Nullable)createReferenceNamed:(NSString *)name fromOID:(GTOID *)targetOID message:(NSString * _Nullable)message error:(NSError **)error;
 
 /// Creates a symbolic reference to another ref.
 ///
@@ -374,7 +374,7 @@ typedef NS_ENUM(NSInteger, GTRepositoryStateType) {
 /// error     - If not NULL, set to any error that occurs.
 ///
 /// Returns the created ref, or nil if an error occurred.
-- (GTReference * _Nullable)createReferenceNamed:(NSString *)name fromReference:(GTReference *)targetRef message:(NSString * _Nullable)message error:(NSError *__autoreleasing*)error;
+- (GTReference * _Nullable)createReferenceNamed:(NSString *)name fromReference:(GTReference *)targetRef message:(NSString * _Nullable)message error:(NSError **)error;
 
 /// Create a new local branch pointing to the given OID.
 ///
@@ -386,14 +386,14 @@ typedef NS_ENUM(NSInteger, GTRepositoryStateType) {
 /// error     - If not NULL, set to any error that occurs.
 ///
 /// Returns the new branch, or nil if an error occurred.
-- (GTBranch * _Nullable)createBranchNamed:(NSString *)name fromOID:(GTOID *)targetOID message:(NSString * _Nullable)message error:(NSError *__autoreleasing*)error;
+- (GTBranch * _Nullable)createBranchNamed:(NSString *)name fromOID:(GTOID *)targetOID message:(NSString * _Nullable)message error:(NSError **)error;
 
 /// Get the current branch.
 ///
 /// error(out) - will be filled if an error occurs
 ///
 /// returns the current branch or nil if an error occurred.
-- (GTBranch * _Nullable)currentBranchWithError:(NSError *__autoreleasing*)error;
+- (GTBranch * _Nullable)currentBranchWithError:(NSError **)error;
 
 /// Find the commits that are on our local branch but not on the remote branch.
 ///
@@ -401,7 +401,7 @@ typedef NS_ENUM(NSInteger, GTRepositoryStateType) {
 /// error(out)   - will be filled if an error occurs
 ///
 /// returns the local commits, an empty array if there is no remote branch, or nil if an error occurred
-- (NSArray<GTCommit *> * _Nullable)localCommitsRelativeToRemoteBranch:(GTBranch *)remoteBranch error:(NSError *__autoreleasing*)error;
+- (NSArray<GTCommit *> * _Nullable)localCommitsRelativeToRemoteBranch:(GTBranch *)remoteBranch error:(NSError **)error;
 
 /// Retrieves git's "prepared message" for the next commit, like the default
 /// message pre-filled when committing after a conflicting merge.
@@ -410,7 +410,7 @@ typedef NS_ENUM(NSInteger, GTRepositoryStateType) {
 ///
 /// Returns the message from disk, or nil if no prepared message exists or an
 /// error occurred.
-- (NSString * _Nullable)preparedMessageWithError:(NSError *__autoreleasing*)error;
+- (NSString * _Nullable)preparedMessageWithError:(NSError **)error;
 
 /// The signature for the user at the current time, based on the repository and
 /// system configs. If the user's name or email have not been set, reasonable
@@ -437,7 +437,7 @@ typedef NS_ENUM(NSInteger, GTRepositoryStateType) {
 ///
 /// Returns the first submodule that matches the given name, or nil if an error
 /// occurred locating or instantiating the GTSubmodule.
-- (GTSubmodule * _Nullable)submoduleWithName:(NSString *)name error:(NSError *__autoreleasing*)error;
+- (GTSubmodule * _Nullable)submoduleWithName:(NSString *)name error:(NSError **)error;
 
 /// Finds the merge base between the commits pointed at by the given OIDs.
 ///
@@ -446,28 +446,28 @@ typedef NS_ENUM(NSInteger, GTRepositoryStateType) {
 /// error     - If not NULL, set to any error that occurs.
 ///
 /// Returns the merge base, or nil if none is found or an error occurred.
-- (GTCommit * _Nullable)mergeBaseBetweenFirstOID:(GTOID *)firstOID secondOID:(GTOID *)secondOID error:(NSError *__autoreleasing*)error;
+- (GTCommit * _Nullable)mergeBaseBetweenFirstOID:(GTOID *)firstOID secondOID:(GTOID *)secondOID error:(NSError **)error;
 
 /// The object database backing the repository.
 ///
 /// error - The error if one occurred.
 ///
 /// Returns the object database, or nil if an error occurred.
-- (GTObjectDatabase * _Nullable)objectDatabaseWithError:(NSError *__autoreleasing*)error;
+- (GTObjectDatabase * _Nullable)objectDatabaseWithError:(NSError **)error;
 
 /// The configuration for the repository.
 ///
 /// error - The error if one occurred.
 ///
 /// Returns the configuration, or nil if an error occurred.
-- (GTConfiguration * _Nullable)configurationWithError:(NSError *__autoreleasing*)error;
+- (GTConfiguration * _Nullable)configurationWithError:(NSError **)error;
 
 /// The index for the repository.
 ///
 /// error - The error if one occurred.
 ///
 /// Returns the index, or nil if an error occurred.
-- (GTIndex * _Nullable)indexWithError:(NSError *__autoreleasing*)error;
+- (GTIndex * _Nullable)indexWithError:(NSError **)error;
 
 /// Creates a new lightweight tag in this repository.
 ///
@@ -480,7 +480,7 @@ typedef NS_ENUM(NSInteger, GTRepositoryStateType) {
 ///          May be NULL.
 ///
 /// Returns YES on success or NO otherwise.
-- (BOOL)createLightweightTagNamed:(NSString *)tagName target:(GTObject *)target error:(NSError *__autoreleasing*)error;
+- (BOOL)createLightweightTagNamed:(NSString *)tagName target:(GTObject *)target error:(NSError **)error;
 
 /// Creates an annotated tag in this repo. Existing tags are not overwritten.
 ///
@@ -496,7 +496,7 @@ typedef NS_ENUM(NSInteger, GTRepositoryStateType) {
 ///             May be NULL.
 ///
 /// Returns the object ID of the newly created tag or nil on error.
-- (GTOID * _Nullable)OIDByCreatingTagNamed:(NSString *)tagName target:(GTObject *)theTarget tagger:(GTSignature *)theTagger message:(NSString *)theMessage error:(NSError *__autoreleasing*)error;
+- (GTOID * _Nullable)OIDByCreatingTagNamed:(NSString *)tagName target:(GTObject *)theTarget tagger:(GTSignature *)theTagger message:(NSString *)theMessage error:(NSError **)error;
 
 /// Creates an annotated tag in this repo. Existing tags are not overwritten.
 ///
@@ -512,7 +512,7 @@ typedef NS_ENUM(NSInteger, GTRepositoryStateType) {
 ///             May be NULL.
 ///
 /// Returns the newly created tag or nil on error.
-- (GTTag * _Nullable)createTagNamed:(NSString *)tagName target:(GTObject *)theTarget tagger:(GTSignature *)theTagger message:(NSString *)theMessage error:(NSError *__autoreleasing*)error;
+- (GTTag * _Nullable)createTagNamed:(NSString *)tagName target:(GTObject *)theTarget tagger:(GTSignature *)theTagger message:(NSString *)theMessage error:(NSError **)error;
 
 /// Checkout a commit
 ///
@@ -521,7 +521,7 @@ typedef NS_ENUM(NSInteger, GTRepositoryStateType) {
 /// error         - The error if one occurred. Can be NULL.
 ///
 /// Returns YES if operation was successful, NO otherwise
-- (BOOL)checkoutCommit:(GTCommit *)targetCommit options:(GTCheckoutOptions * _Nullable)options error:(NSError *__autoreleasing*)error;
+- (BOOL)checkoutCommit:(GTCommit *)targetCommit options:(GTCheckoutOptions * _Nullable)options error:(NSError **)error;
 
 /// Checkout a reference
 ///
@@ -530,7 +530,7 @@ typedef NS_ENUM(NSInteger, GTRepositoryStateType) {
 /// error            - The error if one occurred. Can be NULL.
 ///
 /// Returns YES if operation was successful, NO otherwise
-- (BOOL)checkoutReference:(GTReference *)targetReference options:(GTCheckoutOptions * _Nullable)options error:(NSError *__autoreleasing*)error;
+- (BOOL)checkoutReference:(GTReference *)targetReference options:(GTCheckoutOptions * _Nullable)options error:(NSError **)error;
 
 /// Checkout an index
 ///
@@ -539,7 +539,7 @@ typedef NS_ENUM(NSInteger, GTRepositoryStateType) {
 /// error   - The error if one occurred. Can be NULL.
 ///
 /// Returns YES if operation was successful, NO otherwise
-- (BOOL)checkoutIndex:(GTIndex *)index options:(GTCheckoutOptions * _Nullable)options error:(NSError *__autoreleasing*)error;
+- (BOOL)checkoutIndex:(GTIndex *)index options:(GTCheckoutOptions * _Nullable)options error:(NSError **)error;
 
 /// Checkout a tree
 ///
@@ -549,7 +549,7 @@ typedef NS_ENUM(NSInteger, GTRepositoryStateType) {
 ///
 /// Returns YES if operation was successful, NO otherwise
 /// Note: this operation will NOT update HEAD to newly checked out tree.
-- (BOOL)checkoutTree:(GTTree *)targetTree options:(GTCheckoutOptions * _Nullable)options error:(NSError *__autoreleasing*)error;
+- (BOOL)checkoutTree:(GTTree *)targetTree options:(GTCheckoutOptions * _Nullable)options error:(NSError **)error;
 
 /// Flush the gitattributes cache.
 - (void)flushAttributesCache;
@@ -572,7 +572,7 @@ typedef NS_ENUM(NSInteger, GTRepositoryStateType) {
 /// Returns the loaded filter list, or nil if an error occurs or there are no
 /// filters to apply to the given path. The latter two cases can be
 /// distinguished using the value of `success`.
-- (GTFilterList * _Nullable)filterListWithPath:(NSString *)path blob:(GTBlob * _Nullable)blob mode:(GTFilterSourceMode)mode options:(GTFilterListOptions)options success:(BOOL * _Nullable)success error:(NSError *__autoreleasing*)error;
+- (GTFilterList * _Nullable)filterListWithPath:(NSString *)path blob:(GTBlob * _Nullable)blob mode:(GTFilterSourceMode)mode options:(GTFilterListOptions)options success:(BOOL * _Nullable)success error:(NSError **)error;
 
 /// Calculates how far ahead/behind the commit represented by `headOID` is,
 /// relative to the commit represented by `baseOID`.
@@ -584,7 +584,7 @@ typedef NS_ENUM(NSInteger, GTRepositoryStateType) {
 /// error   - If not NULL, set to any error that occurs.
 ///
 /// Returns whether `ahead` and `behind` were successfully calculated.
-- (BOOL)calculateAhead:(size_t *)ahead behind:(size_t *)behind ofOID:(GTOID *)headOID relativeToOID:(GTOID *)baseOID error:(NSError *__autoreleasing*)error;
+- (BOOL)calculateAhead:(size_t *)ahead behind:(size_t *)behind ofOID:(GTOID *)headOID relativeToOID:(GTOID *)baseOID error:(NSError **)error;
 
 /// Creates an enumerator for walking the unique commits, as determined by a
 /// pushing a starting OID and hiding the relative OID.
@@ -594,7 +594,7 @@ typedef NS_ENUM(NSInteger, GTRepositoryStateType) {
 /// error       - The error if one occurred.
 ///
 /// Returns the enumerator or nil if an error occurred.
-- (GTEnumerator * _Nullable)enumeratorForUniqueCommitsFromOID:(GTOID *)fromOID relativeToOID:(GTOID *)relativeOID error:(NSError *__autoreleasing*)error;
+- (GTEnumerator * _Nullable)enumeratorForUniqueCommitsFromOID:(GTOID *)fromOID relativeToOID:(GTOID *)relativeOID error:(NSError **)error;
 
 /// Determines the status of a git repository--i.e., whether an operation
 /// (merge, cherry-pick, etc) is in progress.
@@ -603,7 +603,7 @@ typedef NS_ENUM(NSInteger, GTRepositoryStateType) {
 /// error - The error if one occurred.
 ///
 /// Returns YES if operation was successful, NO otherwise
-- (BOOL)calculateState:(GTRepositoryStateType *)state withError:(NSError *__autoreleasing*)error;
+- (BOOL)calculateState:(GTRepositoryStateType *)state withError:(NSError **)error;
 
 /// Remove all the metadata associated with an ongoing command like merge,
 /// revert, cherry-pick, etc.  For example: MERGE_HEAD, MERGE_MSG, etc.
@@ -627,7 +627,7 @@ typedef NS_ENUM(NSInteger, GTRepositoryStateType) {
 ///                 May be NULL.
 ///
 /// Returns the newly created note or nil on error.
-- (GTNote * _Nullable)createNote:(NSString *)note target:(GTObject *)theTarget referenceName:(NSString * _Nullable)referenceName author:(GTSignature *)author committer:(GTSignature *)committer overwriteIfExists:(BOOL)overwrite error:(NSError *__autoreleasing*)error;
+- (GTNote * _Nullable)createNote:(NSString *)note target:(GTObject *)theTarget referenceName:(NSString * _Nullable)referenceName author:(GTSignature *)author committer:(GTSignature *)committer overwriteIfExists:(BOOL)overwrite error:(NSError **)error;
 
 /// Removes a note attached to object in this repo
 ///
@@ -641,7 +641,7 @@ typedef NS_ENUM(NSInteger, GTRepositoryStateType) {
 ///                 May be NULL.
 ///
 /// Returns the YES on success and NO on error.
-- (BOOL)removeNoteFromObject:(GTObject *)parentObject referenceName:(NSString * _Nullable)referenceName author:(GTSignature *)author committer:(GTSignature *)committer error:(NSError *__autoreleasing*)error;
+- (BOOL)removeNoteFromObject:(GTObject *)parentObject referenceName:(NSString * _Nullable)referenceName author:(GTSignature *)author committer:(GTSignature *)committer error:(NSError **)error;
 
 /// Enumerates through all stored notes in this repo
 ///
@@ -653,7 +653,7 @@ typedef NS_ENUM(NSInteger, GTRepositoryStateType) {
 ///                 If the block sets `stop` to YES, the iterator is finished.
 ///
 /// Returns YES on overall success or NO on error of any kind.
-- (BOOL)enumerateNotesWithReferenceName:(NSString * _Nullable)referenceName error:(NSError *__autoreleasing*)error usingBlock:(void (^)(GTNote * _Nullable note, GTObject * _Nullable object, NSError * _Nullable error, BOOL *stop))block;
+- (BOOL)enumerateNotesWithReferenceName:(NSString * _Nullable)referenceName error:(NSError **)error usingBlock:(void (^)(GTNote * _Nullable note, GTObject * _Nullable object, NSError * _Nullable error, BOOL *stop))block;
 
 @end
 
