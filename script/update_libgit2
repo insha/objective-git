@@ -19,12 +19,22 @@ else
   echo "Running on a Apple x86"
   export ARCH_PREFIX=/usr/local
 fi
+
 export PKG_CONFIG_PATH=$ARCH_PREFIX/opt/openssl/lib/pkgconfig
 
 # augment path to help it find cmake installed in /usr/local/bin,
 # e.g. via brew. Xcode's Run Script phase doesn't seem to honor
 # ~/.MacOSX/environment.plist
 PATH="$ARCH_PREFIX/bin:$PATH"
+
+product="libgit2.a"
+install_path="../../${product}"
+
+if [ -f "$install_path" ] ; then
+  printf "${product} was found.\n"
+  printf "No need to build it again.\n"
+  exit 0
+fi
 
 cmake -DBUILD_SHARED_LIBS:BOOL=OFF \
     -DLIBSSH2_INCLUDE_DIRS:PATH=$ARCH_PREFIX/include/ \
@@ -33,8 +43,6 @@ cmake -DBUILD_SHARED_LIBS:BOOL=OFF \
     ..
 cmake --build .
 
-product="libgit2.a"
-install_path="../../${product}"
 rm -rf $install_path
 cp -v "${product}" "${install_path}"
 
